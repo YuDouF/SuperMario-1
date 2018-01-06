@@ -275,7 +275,6 @@
 		274107251FFD1778001C2F35 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 274106931FFD1766001C2F35 /* bg.png */; };
 		274107261FFD1778001C2F35 /* setting_s.png in Resources */ = {isa = PBXBuildFile; fileRef = 274106941FFD1766001C2F35 /* setting_s.png */; };
 		274107271FFD1778001C2F35 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 274106951FFD1766001C2F35 /* background.png */; };
-		274107281FFD1778001C2F35 /* mario in Resources */ = {isa = PBXBuildFile; fileRef = 274106961FFD1767001C2F35 /* mario */; };
 		274107291FFD1778001C2F35 /* MarioMap8.tmx in Resources */ = {isa = PBXBuildFile; fileRef = 274106971FFD1767001C2F35 /* MarioMap8.tmx */; };
 		2741072A1FFD1778001C2F35 /* YuDaoGuaiWuSi.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 274106981FFD1767001C2F35 /* YuDaoGuaiWuSi.ogg */; };
 		2741072B1FFD1778001C2F35 /* flag.png in Resources */ = {isa = PBXBuildFile; fileRef = 274106991FFD1767001C2F35 /* flag.png */; };
@@ -892,7 +891,6 @@
 		274106931FFD1766001C2F35 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bg.png; path = Resources/bg.png; sourceTree = "<group>"; };
 		274106941FFD1766001C2F35 /* setting_s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = setting_s.png; path = Resources/setting_s.png; sourceTree = "<group>"; };
 		274106951FFD1766001C2F35 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background.png; path = Resources/background.png; sourceTree = "<group>"; };
-		274106961FFD1767001C2F35 /* mario */ = {isa = PBXFileReference; lastKnownFileType = folder; name = mario; path = Resources/mario; sourceTree = "<group>"; };
 		274106971FFD1767001C2F35 /* MarioMap8.tmx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = MarioMap8.tmx; path = Resources/MarioMap8.tmx; sourceTree = "<group>"; };
 		274106981FFD1767001C2F35 /* YuDaoGuaiWuSi.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; name = YuDaoGuaiWuSi.ogg; path = Resources/YuDaoGuaiWuSi.ogg; sourceTree = "<group>"; };
 		274106991FFD1767001C2F35 /* flag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = flag.png; path = Resources/flag.png; sourceTree = "<group>"; };
@@ -1101,7 +1099,6 @@
 				274106711FFD175F001C2F35 /* leftright.png */,
 				2741069D1FFD1768001C2F35 /* lighting.png */,
 				2741066F1FFD175E001C2F35 /* M_n.png */,
-				274106961FFD1767001C2F35 /* mario */,
 				274106C21FFD1770001C2F35 /* MarioMap1.tmx */,
 				274106641FFD175C001C2F35 /* MarioMap2.tmx */,
 				2741066A1FFD175D001C2F35 /* MarioMap3.tmx */,
@@ -2189,7 +2186,6 @@
 				273E8CAE1FF38FA300AB4EA8 /* Default-Landscape~ipad.png in Resources */,
 				2741070B1FFD1778001C2F35 /* allow_walkLeft.png in Resources */,
 				2741073E1FFD1778001C2F35 /* sound_effect_off.png in Resources */,
-				274107281FFD1778001C2F35 /* mario in Resources */,
 				2741071F1FFD1778001C2F35 /* Jump.ogg in Resources */,
 				274107721FFD1778001C2F35 /* select1.jpg in Resources */,
 				2741070F1FFD1778001C2F35 /* coinani.png in Resources */,

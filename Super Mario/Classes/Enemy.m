@@ -139,15 +139,16 @@
 
 - (void)enemyCollistionV
 {
+    
     CGPoint currentPos = [self position];
     CGPoint downCollision = currentPos;
     CGPoint downTilecoord = [[GameMap getGameMap] positionToTileCoord:downCollision];
     downTilecoord.y += 1;
     
-    CGPoint downPos = CCGameMap::getGameMap()->tilecoordToPosition(downTilecoord);
-    downPos = ccp(currentPos.x, downPos.y + CCGameMap::getGameMap()->getTileSize().height);
+    CGPoint downPos = [[GameMap getGameMap] tilecoordToPosition:downTilecoord];
+    downPos = ccp(currentPos.x, downPos.y + [[GameMap getGameMap] tileSize].height);
     
-    TileType tileType = CCGameMap::getGameMap()->tileTypeforPos(downTilecoord);
+    enum TileType tileType = [[GameMap getGameMap] tileTypeforPos:downTilecoord];
     bool downFlag = false;
     switch (tileType)
     {
@@ -175,33 +176,33 @@
     jumpOffset -= ccJumpOffset;
 }
 
-///
-- (EnemyVSHero)checkCollisionWithHero()
+- (enum EnemyVSHero)checkCollisionWithHero
 {
-    EnemyVSHero ret = eVS_nonKilled;
+    enum EnemyVSHero ret = eVS_nonKilled;
     
-    CGPoint heroPos = CCHero::getHeroInstance()->getPosition();
-    CCSize heroSize = CCHero::getHeroInstance()->getContentSize();
-    CCRect heroRect = CCRectMake(heroPos.x - heroSize.width/2 + 2, heroPos.y + 3,
+    CGPoint heroPos = [[Hero getHeroInstance] position];
+    CGSize heroSize = [[Hero getHeroInstance] contentSize];
+    CGRect heroRect = CGRectMake(heroPos.x - heroSize.width/2 + 2, heroPos.y + 3,
                                  heroSize.width - 4, heroSize.height - 4);
     
-    CCRect heroRectVS = CCRectMake(heroPos.x - heroSize.width/2 - 3, heroPos.y,
+    CGRect heroRectVS = CGRectMake(heroPos.x - heroSize.width/2 - 3, heroPos.y,
                                    heroSize.width - 6, 2);
     
-    CGPoint enemyPos = this->getPosition();
-    CCRect enemyRect = CCRectMake(enemyPos.x - bodySize.width/2 + 1, enemyPos.y,
-                                  bodySize.width - 2, bodySize.height - 4);
+    CGPoint enemyPos = [self position];
+    CGRect enemyRect = CGRectMake(enemyPos.x - self.bodySize.width/2 + 1, enemyPos.y,
+                                  self.bodySize.width - 2, self.bodySize.height - 4);
     
-    CCRect enemyRectVS = CCRectMake(enemyPos.x - bodySize.width/2 - 2, enemyPos.y + bodySize.height - 4,
-                                    bodySize.width - 4, 4);
+    CGRect enemyRectVS = CGRectMake(enemyPos.x - self.bodySize.width/2 - 2, enemyPos.y + self.bodySize.height - 4,
+                                    self.bodySize.width - 4, 4);
     
-    if (heroRectVS.intersectsRect(enemyRectVS))
+    
+    if (CGRectIntersectsRect(heroRectVS, enemyRectVS))
     {
         ret = eVS_enemyKilled;
         return ret;
     }
     
-    if (heroRect.intersectsRect(enemyRect))
+    if (CGRectIntersectsRect(heroRect, enemyRect))
     {
         ret = eVS_heroKilled;
         return ret;
@@ -210,33 +211,34 @@
     return ret;
 }
 
-void CCEnemy::forKilledByHero()
+- (void)forKilledByHero
 {
-    enemyState = eEnemyState_over;
-    enemyBody->stopAllActions();
-    this->stopAllActions();
-    this->unscheduleUpdate();
-    enemyBody->setDisplayFrame(enemyLifeOver);
-    CCActionInterval *pDelay = CCDelayTime::create(1.0f);
-    this->runAction(CCSequence::create(pDelay,
-                                       CCCallFunc::create(this, callfunc_selector(CCEnemy::setNonVisibleForKilledByHero)), NULL));
+    self.enemyState = eEnemyState_over;
+    [[self enemyBody] stopAllActions];
+    [self stopAllActions];
+    [self unscheduleAllSelectors];
+
+    [[self enemyBody] setSpriteFrame:enemyLifeOver];
+    CCActionInterval *pDelay = [CCActionDelay actionWithDuration:1.0f];
+//    this->runAction(CCSequence::create(pDelay,
+//                                       CCCallFunc::create(this, callfunc_selector(CCEnemy::setNonVisibleForKilledByHero)), NULL));
+    [self runAction:[CCActionSequence actions:pDelay, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByHero:)], nil]];
 }
 
-void CCEnemy::setNonVisibleForKilledByHero()
+- (void)setNonVisibleForKilledByHero
 {
-    this->setVisible(false);
-}
+    [self setVisible:No];
+};
 
-void CCEnemy::forKilledByBullet()
+- (void)forKilledByBullet
 {
-    enemyState = eEnemyState_over;
-    enemyBody->stopAllActions();
-    this->unscheduleUpdate();
+    self.enemyState = eEnemyState_over;
+    [[self enemyBody] stopAllActions];
+    [self unscheduleAllSelectors];
+    CCActionMoveBy *pMoveBy = nil;
+    CCActionJumpBy *pJumpBy = nil;
     
-    CCMoveBy *pMoveBy = NULL;
-    CCJumpBy *pJumpBy = NULL;
-    
-    switch (CCGlobal::getGlobalInstance()->getCurrentBulletType())
+    switch ([[Global getgetGlobalInstanceGa] getCurrentBulletType])
     {
         case eBullet_common:
         {

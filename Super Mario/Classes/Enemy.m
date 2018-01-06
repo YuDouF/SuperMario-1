@@ -175,7 +175,7 @@
     jumpOffset -= ccJumpOffset;
 }
 
-/******
+
 - (EnemyVSHero)checkCollisionWithHero()
 {
     EnemyVSHero ret = eVS_nonKilled;

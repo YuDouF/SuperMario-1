@@ -12,6 +12,7 @@
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
+#import "GameEnum.h"
 
 // -----------------------------------------------------------------
 
@@ -19,7 +20,6 @@
 
 // -----------------------------------------------------------------
 // properties
-@property CGSize tileSize;
 // -----------------------------------------------------------------
 // methods
 
@@ -27,8 +27,9 @@
 - (instancetype)init;
 - (CGPoint)positionToTileCoord:(CGPoint)pos;
 - (CGPoint)tilecoordToPosition:(CGPoint)tileCoord;
-- (TileType)tileTypeforPos:(CGPoint)tileCoord;
+- (enum TileType)tileTypeforPos:(CGPoint)tileCoord;
 + (GameMap*)getGameMap;
+- (void)createNewBulletForBossWithPos:(CGPoint)pos andType:(enum EnemyType)enemyType;
 
 // -----------------------------------------------------------------
 

@@ -38,8 +38,6 @@
 @property float jumpOffset;
 @property float ccJumpOffset;
 
-
-@property enum EnemyState enemyState;
 // -----------------------------------------------------------------
 // methods
 
@@ -58,6 +56,7 @@
 - (void)setNonVisibleForKilledByBullet;
 
 - (void)setEnemyState:(enum EnemyState)state;
+- (enum EnemyState)getEnemyState;
 // -----------------------------------------------------------------
 
 @end
@@ -120,6 +119,7 @@
 
 // -----------------------------------------------------------------
 // methods
+- (instancetype)initWithFlyDis:(float)dis;
 - (void)launchEnemy;
 - (void)update:(float)dt;
 @end
@@ -140,6 +140,7 @@
 @property double PI;
 // -----------------------------------------------------------------
 // methods
+- (instancetype)initWithBegAngle:(float)begAngle AndTime:(float)time;
 - (void)launchEnemy;
 - (void)stopEnemyUpdate;
 - (enum EnemyVSHero)checkCollisionWithHero;
@@ -157,6 +158,7 @@
 @property bool isFlying;
 // -----------------------------------------------------------------
 // methods
+- (instancetype)initWithoffsetH:(float)offsetH andOffsetV:(float)offsetV andDuration:(float)duration;
 - (void)launchEnemy;
 - (void)update:(float)dt;
 - (void)stopEnemyUpdate;
@@ -200,6 +202,7 @@
 @property bool isAddable;
 // -----------------------------------------------------------------
 // methods
+- (instancetype)initWithNum:(int)addnum;
 - (void)launchEnemy;
 - (void)update:(float)dt;
 - (enum EnemyVSHero)checkCollisionWithHero;
@@ -247,6 +250,7 @@
 @property CCSpriteFrame *normal;
 // -----------------------------------------------------------------
 // methods
+- (instancetype)initWithDelay:(float)delay andType:(int)type;
 - (void)launchEnemy;
 - (void)update:(float)dt;
 - (void)forKilledByHero;

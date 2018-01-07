@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 #import "GameEnum.h"
-
+#define sAnimationMgr [AnimationManager getInstance]
 @interface AnimationManager : NSObject
 
 + (AnimationManager*)getInstance;
@@ -20,4 +20,6 @@
 - (CCActionAnimate*)createAnimateWithType:(enum AnimationType)key;
 - (void)setSelectLevel;
 - (void)setMusicSwitch;
+
+
 @end

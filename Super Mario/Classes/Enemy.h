@@ -96,6 +96,7 @@
 @property CCSpriteFrame *rightFace;
 // -----------------------------------------------------------------
 // methods
+- (instancetype)initWithStartface:(int)_startface;
 - (void)launchEnemy;
 - (void)enemyCollistionH;
 - (void)update:(float)dt;
@@ -107,6 +108,7 @@
 @property float roundDis;
 // -----------------------------------------------------------------
 // methods
+- (instancetype)initWithRoundDis:(float)dis;
 - (void)launchEnemy;
 - (void)update:(float)dt;
 @end

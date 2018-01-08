@@ -12,6 +12,7 @@
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
+#import "CCTextureCache.h"
 #import "GameEnum.h"
 //#import "Item.h"
 #import "Enemy.h"
@@ -56,6 +57,16 @@
 @property CCSprite *pPrincess;
 @property CGPoint enemyTilePos;
 @property Enemy *pRandomEnemy;
+@property CCTiledMapLayer* cloudLayer;
+@property CCTiledMapLayer* blockLayer;
+@property CCTiledMapLayer* pipeLayer;
+@property CCTiledMapLayer* landLayer;
+@property CCTiledMapLayer* trapLayer;
+@property CCTiledMapObjectGroup* objectLayer;
+@property CCTiledMapLayer* coinLayer;
+@property CCTiledMapLayer* flagpoleLayer;
+
+
 // -----------------------------------------------------------------
 // methods
 

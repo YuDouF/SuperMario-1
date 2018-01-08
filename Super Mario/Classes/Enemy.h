@@ -217,6 +217,7 @@
 @property CGPoint firePos;
 // -----------------------------------------------------------------
 // methods
+- (instancetype)initWithDelay:(float)delay;
 - (void)launchEnemy;
 - (void)update:(float)dt;
 - (enum EnemyVSHero)checkCollisionWithHero;

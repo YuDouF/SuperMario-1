@@ -144,8 +144,6 @@
 - (void)launchEnemy;
 - (void)stopEnemyUpdate;
 - (enum EnemyVSHero)checkCollisionWithHero;
-- (void)forKilledByBullet;
-- (void)forKilledByHero;
 - (void)update:(float)dt;
 @end
 
@@ -161,7 +159,6 @@
 - (instancetype)initWithoffsetH:(float)offsetH andOffsetV:(float)offsetV andDuration:(float)duration;
 - (void)launchEnemy;
 - (void)update:(float)dt;
-- (void)stopEnemyUpdate;
 - (void)checkState;
 - (enum EnemyVSHero)checkCollisionWithHero;
 - (void)forKilledByHero;
@@ -268,8 +265,6 @@
 - (void)update:(float)dt;
 - (enum EnemyVSHero)checkCollisionWithHero;
 - (void)checkState;
-- (void)forKilledByHero;
-- (void)forKilledByBullet;
 @end
 
 

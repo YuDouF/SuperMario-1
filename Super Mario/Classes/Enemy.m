@@ -226,7 +226,7 @@
     CCActionInterval *pDelay = [CCActionDelay actionWithDuration:1.0f];
 //    this->runAction(CCSequence::create(pDelay,
 //                                       CCCallFunc::create(this, callfunc_selector(CCEnemy::setNonVisibleForKilledByHero)), NULL));
-    [self runAction:[CCActionSequence actions:pDelay, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByHero:)], nil]];
+    [self runAction:[CCActionSequence actions:pDelay, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByHero)], nil]];
 }
 
 - (void)setNonVisibleForKilledByHero
@@ -301,7 +301,7 @@
         CCActionDelay *pDelay = [CCActionDelay actionWithDuration:0.2f];
 //        this->runAction(CCSequence::create(pDelay,
 //                                           CCCallFunc::create(this, callfunc_selector(CCEnemy::setNonVisibleForKilledByBullet)), NULL));
-        [self runAction:[CCActionSequence actions:pDelay, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByBullet:)], nil]];
+        [self runAction:[CCActionSequence actions:pDelay, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByBullet)], nil]];
         return ;
     }
     
@@ -309,13 +309,13 @@
     {
 //        this->runAction(CCSequence::create(pJumpBy,
 //                                           CCCallFunc::create(this, callfunc_selector(CCEnemy::setNonVisibleForKilledByBullet)), NULL));
-        [self runAction:[CCActionSequence actions:pJumpBy, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByBullet:)], nil]];
+        [self runAction:[CCActionSequence actions:pJumpBy, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByBullet)], nil]];
     }
     else
     {
 //        this->runAction(CCSequence::create(pMoveBy,
 //                                           CCCallFunc::create(this, callfunc_selector(CCEnemy::setNonVisibleForKilledByBullet)), NULL));
-        [self runAction:[CCActionSequence actions:pMoveBy, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByBullet:)], nil]];
+        [self runAction:[CCActionSequence actions:pMoveBy, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByBullet)], nil]];
     }
 }
 
@@ -529,7 +529,7 @@
 //    [self.enemyLifeOver retain];
     
     self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.overByArrow retain];
+//    [self.overByArrow retain];
 }
 
 - (void)dealloc{
@@ -642,10 +642,10 @@
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
 
     self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 9, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.enemyLifeOver retain];
+//    [self.enemyLifeOver retain];
     
     self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.overByArrow retain];
+//    [self.overByArrow retain];
     
     self.roundDis = dis;
 }
@@ -656,14 +656,14 @@
 
 - (void)launchEnemy
 {
-    [self getEnemyState] = eEnemyState_active;
-    [self.enemyBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimateWithType:eAniTortoiseLeft]]];
-    CCActionInterval *pMoveLeft = [CCActionMoveBy actionWithDuration:2.0f position:ccp(-roundDis, 0.0f)];
-    CCActionInterval *pMoveRight = [CCActionMoveBy actionWithDuration:2.0f position:ccp(roundDis, 0.0f)];
+    [self setEnemyState:eEnemyState_active];
+    [[self enemyBody] runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimateWithType:eAniTortoiseLeft]]];
+    CCActionInterval *pMoveLeft = [CCActionMoveBy actionWithDuration:2.0f position:ccp(-self.roundDis, 0.0f)];
+    CCActionInterval *pMoveRight = [CCActionMoveBy actionWithDuration:2.0f position:ccp(self.roundDis, 0.0f)];
     
-    CCDelayTime *pDelay = [CCActionDelay actionWithDuration:0.2f];
+//    CCActionDelay *pDelay = [CCActionDelay actionWithDuration:0.2f];
     
-    [self runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:pMoveLeft, [CCActionCallFunc actionWithTarget:self selector:@selector(reRight)], pMoveRight, [CCActionCallFunc actionWithTarget:self selector:@selector(reLeft)], nil]]]
+    [self runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:pMoveLeft, [CCActionCallFunc actionWithTarget:self selector:@selector(reRight)], pMoveRight, [CCActionCallFunc actionWithTarget:self selector:@selector(reLeft)], nil]]];
     
 }
 - (void)update:(float)dt{
@@ -684,7 +684,7 @@
 
 @end
 
-// ********************** CCEnemyTortoiseFly ****************** //
+// ********************** EnemyTortoiseFly ****************** //
 @implementation EnemyTortoiseFly
 
 // -----------------------------------------------------------------
@@ -710,10 +710,10 @@
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
     self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 9, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.enemyLifeOver retain];
+//    [self.enemyLifeOver retain];
     
     self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.overByArrow retain];
+//    [self.overByArrow retain];
     
     self.flyDis = dis;
 }
@@ -724,12 +724,12 @@
 
 - (void)launchEnemy
 {
-    [self getEnemyState] = eEnemyState_active;
+    [self setEnemyState:eEnemyState_active];
     [self.enemyBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimateWithType:eAniTortoiseFly]]];
     CCActionInterval *pMoveDown = [CCActionMoveBy actionWithDuration:2.0f position:ccp(0, -self.flyDis)];
     CCActionInterval *pMoveUp = [CCActionMoveBy actionWithDuration:2.0f position:ccp(0, self.flyDis)];
     
-    [self runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:pMoveDown, pMoveUp, nil]]]
+    [self runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:pMoveDown, pMoveUp, nil]]];
     
 }
 - (void)update:(float)dt{
@@ -759,7 +759,7 @@
     self.enemyType = eEnemy_fireString;
     
     self.pArrayFire = [NSMutableArray arrayWithCapacity:3];
-    [self.pArrayFire retain];
+//    [self.pArrayFire retain];
     
     self.enemyBody = [CCSprite spriteWithImageNamed:@"fireBall.png"];
     [self addChild:self.enemyBody];
@@ -778,7 +778,7 @@
     
     self.bodySize = CGSizeMake(48, 16);
     [self setContentSize:self.bodySize];
-    [self setAnchorPoint:ccp(0.0f, 0.5f)]
+    [self setAnchorPoint:ccp(0.0f, 0.5f)];
     
     self.begAngle = begAngle;
     self.time = time;
@@ -796,13 +796,13 @@
 
 - (void)launchEnemy
 {
-    enemyState = eEnemyState_active;
-    [self getEnemyState] = eEnemyState_active;
+    
+    [self setEnemyState:eEnemyState_active];
     [self.enemyBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimateWithType:eAniRotatedFireBall]]];
     [self.enemyBody2 runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimateWithType:eAniRotatedFireBall]]];
     [self.enemyBody3 runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimateWithType:eAniRotatedFireBall]]];
     
-    [self runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:[CCActionRotateBy actionWithDuration:1.0f angle:-self.begAngle], [CCActionCallFunc actionWithTarget:self selector:@selector(launchFireString)], nil]]]
+    [self runAction:[CCActionRepeatForever actionWithAction:[CCActionSequence actions:[CCActionRotateBy actionWithDuration:1.0f angle:-self.begAngle], [CCActionCallFunc actionWithTarget:self selector:@selector(launchFireString)], nil]]];
 }
 
 - (void)stopEnemyUpdate
@@ -827,8 +827,9 @@
     for (int i = 0; i < 3; ++i)
     {
         CGPoint firePos = ccp(thisPos.x + (2*i*8+8)*cos(angleTemp), thisPos.y + (2*i*8+8)*sin(angleTemp));
-        CGRect fireRect = CGRectMake(self.firePos.x - self.fireSize.width/2, self.firePos.y - self.fireSize.height/2,
+        CGRect fireRect = CGRectMake(firePos.x - self.fireSize.width/2, firePos.y - self.fireSize.height/2,
                                      self.fireSize.width, self.fireSize.height);
+        
         if (CGRectIntersectsRect(heroRect, fireRect))
         {
             ret = eVS_heroKilled;
@@ -854,7 +855,7 @@
 
 @end
 
-// ********************** CCEnemyFlyFish ****************** //
+// ********************** EnemyFlyFish ****************** //
 @implementation EnemyFlyFish
 
 // -----------------------------------------------------------------
@@ -875,7 +876,7 @@
 - (instancetype)initWithoffsetH:(float)offsetH andOffsetV:(float)offsetV andDuration:(float)duration
 {
     self.enemyType = eEnemy_flyFish;
-    [self getEnemyState] = eEnemyState_active;
+    [self setEnemyState:eEnemyState_active];
     self.enemyBody = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"flyFishRight.png"] rect:CGRectMake(16 * 4, 0, 16, 16)];
     self.bodySize = CGSizeMake(16, 16);
     [[self enemyBody] setAnchorPoint:ccp(0, 0)];
@@ -884,8 +885,8 @@
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
     self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"flyFishRight.png" rectInPixels:CGRectMake(16 * 4, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.enemyLifeOver retain];
-    self.overByArrow = enemyLifeOver;
+//    [self.enemyLifeOver retain];
+    self.overByArrow = self.enemyLifeOver;
     
     self.offsetH = offsetH;
     self.offsetV = offsetV;
@@ -928,7 +929,7 @@
     CGRect enemyRect = CGRectMake(enemyPos.x - self.bodySize.width/2 + 2, enemyPos.y + 2,
                                   self.bodySize.width - 4, self.bodySize.height - 4);
     
-    if (CGRectIntersectsRect(heroRect, fireRect))
+    if (CGRectIntersectsRect(heroRect, enemyRect))
     {
         ret = eVS_heroKilled;
     }
@@ -953,10 +954,9 @@
 - (void) flyInSky{
     self.isFlying = YES;
     [self setVisible:YES];
-    CCActionInterval *pMoveBy = CCMoveBy::create(offsetDuration, ccp(offsetH, offsetV));
-    CCActionInterval *pMoveBy = [CCActionMoveBy actionWithDuration:offsetDuration position:ccp(self.offsetH, self.offsetV)];
+    CCActionInterval *pMoveBy = [CCActionMoveBy actionWithDuration:self.offsetDuration position:ccp(self.offsetH, self.offsetV)];
 
-    [self runAction:[CCActionSequence actions:pMoveBy, [CCActionCallFunc actionWithTarget:self selector:(reSetNotInSky:)], nil]];
+    [self runAction:[CCActionSequence actions:pMoveBy, [CCActionCallFunc actionWithTarget:self selector:@selector(reSetNotInSky)], nil]];
 }
 - (void)reSetNotInSky{
     [self setVisible:NO];
@@ -983,7 +983,7 @@
     NSAssert(self, @"Unable to create class %@", [self class]);
     // class initalization goes here
     self.enemyType = eEnemy_Boss;
-    [self getEnemyState] = eEnemyState_nonactive;
+    [self setEnemyState:eEnemyState_nonactive];
     
     self.enemyBody = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"boss.png"] rect:CGRectMake(0, 0, 32, 32)];
     [[self enemyBody] setAnchorPoint:ccp(0, 0)];
@@ -993,9 +993,9 @@
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
     self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"boss.png" rectInPixels:CGRectMake(0, 0, 32, 32) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.enemyLifeOver retain];
+//    [self.enemyLifeOver retain];
     self.overByArrow = self.enemyLifeOver;
-    [self.overByArrow retain];
+//    [self.overByArrow retain];
     
     self.ccMoveOffset = 0.5f;
     self.moveOffset = -self.ccMoveOffset;
@@ -1050,15 +1050,13 @@
 {
     if ([[Global getGlobalInstance] currentBulletType] == eBullet_arrow)
     {
-        this->runAction(CCSequence::create(CCMoveBy::create(0.1f, ccp(8, 0)),
-                                           CCMoveBy::create(0.1f, ccp(-8, 0)), NULL));
         [self runAction:[CCActionSequence actions:[CCActionMoveBy actionWithDuration:0.1f position:ccp(8, 0)], [CCActionMoveBy actionWithDuration:0.1f position:ccp(-8, 0)], nil]];
         
         static int num = 0;
         ++num;
         if (num == 5)
         {
-            [self getEnemyState] = eEnemyState_over;
+            [self setEnemyState:eEnemyState_over];
             [[self enemyBody] stopAllActions];
             [self stopAllActions];
             [self unscheduleAllSelectors];
@@ -1131,7 +1129,7 @@
     NSAssert(self, @"Unable to create class %@", [self class]);
     // class initalization goes here
     self.enemyType = eEnemy_BossFire;
-    [self getEnemyState] = eEnemyState_active;
+    [self setEnemyState:eEnemyState_active];
     
     self.enemyBody = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"bossBullet.png"] rect:CGRectMake(0, 0, 24, 8)];
     [[self enemyBody] setAnchorPoint:ccp(0, 0)];
@@ -1141,9 +1139,9 @@
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
     self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"bossBullet.png" rectInPixels:CGRectMake(0, 0, 24, 8) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.enemyLifeOver retain];
+//    [self.enemyLifeOver retain];
     self.overByArrow = self.enemyLifeOver;
-    [self.overByArrow retain];
+//    [self.overByArrow retain];
     
     self.moveOffset = 0.3f;
     
@@ -1223,7 +1221,7 @@
 
 - (instancetype)initWithNum:(int)addnum{
     self.enemyType = eEnemy_AddMushroom;
-    [self getEnemyState] = eEnemyState_nonactive;
+    [self setEnemyState:eEnemyState_nonactive];
     
     self.enemyBody = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"Mushroom0.png"] rect:CGRectMake(0, 0, 16, 16)];
     self.bodySize = CGSizeMake(16, 16);
@@ -1233,9 +1231,9 @@
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
     self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(0, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.enemyLifeOver retain];
+//    [self.enemyLifeOver retain];
     self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(16 * 3, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
-    [self.overByArrow retain];
+//    [self.overByArrow retain];
     
     self.addNums = addnum;
     self.isAddable = YES;
@@ -1253,8 +1251,6 @@
 - (void)update:(float)dt{
     [self checkState];
     
-    this->checkState();
-    
     if ([self getEnemyState] == eEnemyState_active)
     {
         if (self.addNums)
@@ -1262,14 +1258,14 @@
             if (self.isAddable)
             {
                 self.isAddable = false;
-                [self runAction:[CCActionSequence actions:[CCActionMoveBy actionWithDuration:0.5f position:ccp(0, 16)], [CCActionCallFunc actionWithTarget:self selector:(addMushroom:)], nil]];
+                [self runAction:[CCActionSequence actions:[CCActionMoveBy actionWithDuration:0.5f position:ccp(0, 16)], [CCActionCallFunc actionWithTarget:self selector:@selector(addMushroom)], nil]];
 
-                [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:2.0f], [CCActionCallFunc actionWithTarget:self selector:(reSetNonAddable:)], nil]];
+                [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:2.0f], [CCActionCallFunc actionWithTarget:self selector:@selector(reSetNonAddable)], nil]];
             }
         }
         else
         {
-            [self getEnemyState] = eEnemyState_over;
+            [self setEnemyState:eEnemyState_over];
             [[self enemyBody] stopAllActions];
             [self stopAllActions];
             [self unscheduleAllSelectors];
@@ -1309,7 +1305,7 @@
 {
     --self.addNums;
     [[GameMap getGameMap] createNewBulletForBossWithPos:[self position] andType:eEnemy_mushroom];
-    [self runAction:(CCActionMoveBy actionWithDuration:0.5f position:ccp(0, -16))];
+    [self runAction:[CCActionMoveBy actionWithDuration:0.5f position:ccp(0, -16)]];
 }
 
 - (void)reSetNonAddable
@@ -1345,7 +1341,7 @@
     // class initalization goes here
     
     self.enemyType = eEnemy_Battery;
-    [self getEnemyState] = eEnemyState_nonactive;
+    [self setEnemyState:eEnemyState_nonactive];
     
     self.enemyBody = [CCSprite spriteWithImageNamed:@"battery.png"];
     [[self enemyBody] setAnchorPoint:ccp(0, 0)];
@@ -1385,7 +1381,7 @@
             
             [self addBatteryBullet];
             
-            [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:self.fireDelay], [CCActionCallFunc actionWithTarget:self selector:(reSetNonFireable:)], nil]];
+            [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:self.fireDelay], [CCActionCallFunc actionWithTarget:self selector:@selector(reSetNonFireable)], nil]];
         }
     }
 }
@@ -1417,7 +1413,7 @@
     {
         case eBullet_common:
         {
-            [[self enemyBody] runAction:[CCActionSequence actions:[sAnimationMgr createAnimateWithType:eAniBossMoveLeft], [CCActionCallFunc actionWithTarget:self selector:stopAndClear], nil]];
+            [[self enemyBody] runAction:[CCActionSequence actions:[sAnimationMgr createAnimateWithType:eAniBossMoveLeft], [CCActionCallFunc actionWithTarget:self selector:@selector(stopAndClear)], nil]];
             
             break;
         }
@@ -1439,7 +1435,7 @@
 }
 
 - (void)stopAndClear{
-    [self getEnemyState] = eEnemyState_over;
+    [self setEnemyState:eEnemyState_over];
     
     [[self enemyBody] stopAllActions];
     [self stopAllActions];
@@ -1467,7 +1463,7 @@
     NSAssert(self, @"Unable to create class %@", [self class]);
     // class initalization goes here
     self.enemyType = eEnemy_BatteryBullet;
-    [self getEnemyState] = eEnemyState_active;
+    [self setEnemyState:eEnemyState_active];
     
     self.enemyBody = [CCSprite spriteWithImageNamed:@"batteryBullet.png"];
     self.bodySize = CGSizeMake(4, 4);
@@ -1513,7 +1509,7 @@
     
     CGPoint enemyPos = [self position];
     
-    if (CGRectIntersectsRect(heroRect, self.enemyRect))
+    if (CGRectContainsPoint(heroRect, enemyPos))
     {
         ret = eVS_heroKilled;
     }
@@ -1558,7 +1554,7 @@
     // class initalization goes here
     
     self.enemyType = eEnemy_DarkCloud;
-    [self getEnemyState] = eEnemyState_nonactive;
+    [self setEnemyState:eEnemyState_nonactive];
     
     self.type = type;
     switch (self.type)
@@ -1585,8 +1581,8 @@
             break;
     }
     
-    [[self dark] retain];
-    [[self normal] retain];
+//    [[self dark] retain];
+//    [[self normal] retain];
     
     [[self enemyBody] setAnchorPoint:ccp(0, 0)];
     [self setContentSize:self.bodySize];
@@ -1630,17 +1626,16 @@
                 
                 [self addLighting];
                 
-                [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:self.delay], [CCActionCallFunc actionWithTarget:self selector:@selector(reSetDropable:)], nil]];
+                [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:self.delay], [CCActionCallFunc actionWithTarget:self selector:@selector(reSetDropable)], nil]];
             }
         }
     }
 }
 
 - (void)addLighting{
-    enemyBody->setDisplayFrame(dark);
     [[self enemyBody] setSpriteFrame:self.dark];
-    [[GameMap getGameMap] createNewBulletForBossWithPos:enemyPos andType:enemyPos];
-    [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:0.3f], [CCActionCallFunc actionWithTarget:self selector:@selector(reSetNormal:)], nil]];
+    [[GameMap getGameMap] createNewBulletForBossWithPos:self.enemyPos andType:eEnemy_Lighting];
+    [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:0.3f], [CCActionCallFunc actionWithTarget:self selector:@selector(reSetNormal)], nil]];
 }
 - (void)reSetDropable{
     self.isDropable = true;
@@ -1678,7 +1673,7 @@
     NSAssert(self, @"Unable to create class %@", [self class]);
     // class initalization goes here
     self.enemyType = eEnemy_Lighting;
-    [self getEnemyState] = eEnemyState_active;
+    [self setEnemyState:eEnemyState_active];
     
     self.enemyBody = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"lighting.png"] rect:CGRectMake(0, 0, 16, 32)];
     [[self enemyBody] setAnchorPoint:ccp(0, 0)];
@@ -1724,7 +1719,7 @@
     
     if (pos.y <= 2)
     {
-        [self getEnemyState] = eEnemyState_over;
+        [self setEnemyState:eEnemyState_over];
         [[self enemyBody] stopAllActions];
         [self stopAllActions];
         [self unscheduleAllSelectors];
@@ -1751,16 +1746,6 @@
     }
     
     return ret;
-}
-
-void CCEnemyLighting::forKilledByBullet()
-{
-
-}
-
-void CCEnemyLighting::forKilledByHero()
-{
-    
 }
 @end
 

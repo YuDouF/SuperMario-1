@@ -43,7 +43,9 @@
     
     return self;
 }
-
+- (void)launchEnemy{
+    
+}
 - (CGRect)getEnemyRect
 {
     CGPoint pos = [self position];

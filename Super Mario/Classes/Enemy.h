@@ -43,6 +43,7 @@
 
 + (instancetype)node;
 - (instancetype)init;
+- (void)launchEnemy;
 - (CGRect)getEnemyRect;
 - (void)enemyCollistionH;
 - (void)enemyCollistionV;

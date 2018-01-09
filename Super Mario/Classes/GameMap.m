@@ -259,7 +259,7 @@ static GameMap *gameMap = nil;
                 pGadget = new CCGadgetLadderLR(dis);
                 str = (NSString*)[pDic objectForKey:@"LorR"];
                 val = [str intValue];
-                pGadget->setStartFace(val);
+                [pGadget setStartFace:val];
             }
             else if ([type isEqualToString:@"ladderUD"])
             {
@@ -267,13 +267,13 @@ static GameMap *gameMap = nil;
                 pGadget = new CCGadgetLadderUD(dis);
                 str = (NSString*)[pDic objectForKey:@"UorD"];
                 val = [str intValue];
-                pGadget->setStartFace(val);
+                [pGadget setStartFace:val];
             }
             
             if (pGadget != NULL)
             {
-                pGadget->setStartPos(ccp(posX, posY));
-                pGadgetArray->addObject(pGadget);
+                [pGadget setStartPos:ccp(posX, posY)];
+                [[self pGadgetArray] addObject:pGadget];
             }
         }
         else if ([name isEqualToString:@"mushroom"])
@@ -314,6 +314,28 @@ static GameMap *gameMap = nil;
 }
 
 - (void)launchEnemyInMap{
+    Enemy *tempEnemy = nil;
+    unsigned int enemyCount = [[self pEnemyArray] count];
+    for (unsigned int idx = 0; idx < enemyCount; ++idx)
+    {
+        tempEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
+        [tempEnemy setPosition:[tempEnemy enemyPos]];
+        switch ([tempEnemy enemyType])
+        {
+            case eEnemy_flower:
+            case eEnemy_AddMushroom:
+                [self addChild:tempEnemy z:3];
+                break;
+            default:
+                [self addChild:tempEnemy z:7];
+                break;
+        }
+        
+        [tempEnemy launchEnemy];
+    }
+}
+
+- (void)launchGadgetInMap{
     Gadget *tempGadget = nil;
     unsigned int gadgetCount = [[self pGadgetArray] count];
     for (unsigned int idx = 0; idx < gadgetCount; ++idx)
@@ -324,6 +346,8 @@ static GameMap *gameMap = nil;
         [tempGadget launchGadget];
     }
 }
+
+
 - (void)enemyVSHero{
     Enemy *tempEnemy = nil;
     enum EnemyVSHero vsRet;
@@ -877,21 +901,19 @@ static GameMap *gameMap = nil;
     for (unsigned int idxBullet = 0; idxBullet < bulletCount; ++idxBullet)
     {
         pBullet = (Bullet *)[[self pBulletArray] objectAtIndex:idxBullet];
-        ------------------
-        if (pBullet->getBulletState() == eBulletState_nonactive)
+        
+        if ([pBullet bulletState] == eBulletState_nonactive)
         {
-            delBullet->addObject(pBullet);
+            [delBullet addObject:pBullet];
             continue;
         }
-        bulletRect = pBullet->getBulletRect();
+        bulletRect = [pBullet bulletRect];
         
         for (unsigned int idxEnemy = 0; idxEnemy < enemyCount; ++idxEnemy)
         {
-            pEnemy = (CCEnemy *)pEnemyArray->objectAtIndex(idxEnemy);
-            switch (pEnemy->getEnemyType())
+            pEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idxEnemy];
+            switch ([pEnemy enemyType])
             {
-                    // ª¥Æ «≤ªƒ‹±ª»Œ∫Œ◊”µØ¥ÚµÙµƒ
-                    // ªÍ∂∑¬ﬁµƒ≈⁄Ã®∑¢…‰µƒ◊”µØ≤ªª·±ª»Œ∫Œ◊”µØ¥ÚµÙ
                 case eEnemy_BatteryBullet:
                 case eEnemy_fireString:
                 case eEnemy_Lighting:
@@ -899,71 +921,170 @@ static GameMap *gameMap = nil;
                     continue;
                     break;
             }
-            if (pBullet->getBulletType() == eBullet_common &&
-                pEnemy->getEnemyType() == eEnemy_Boss)
+            
+            if ([pBullet bulletType] == eBullet_common &&
+                [pEnemy enemyType] == eEnemy_Boss)
             {
-                // ∆’Õ®µƒ◊”µØ∂‘Boss√ª”–◊˜”√
+                
                 continue;
             }
-            if (pBullet->getBulletType() == eBullet_common &&
-                pEnemy->getEnemyType() == eEnemy_BossFire)
+            if ([pBullet bulletType] == eBullet_common &&
+                [pEnemy enemyType] == eEnemy_BossFire)
             {
-                // ∆’Õ®◊”µØ∂‘Boss∑¢≥ˆµƒª«Ú“≤ «√ª”–◊˜”√µƒ
+                
                 continue;
             }
             
-            if (pEnemy->getEnemyState() == eEnemyState_active)
+            if ([pEnemy getEnemyState] == eEnemyState_active)
             {
-                enemyRect = pEnemy->getEnemyRect();
+                enemyRect = [pEnemy getEnemyRect];
                 
-                if (bulletRect.intersectsRect(enemyRect))
+                if (CGRectIntersectsRect(bulletRect, enemyRect))
                 {
-                    pBullet->forKilledEnemy();
-                    CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("HuoQiuDaDaoGuaiWu.ogg");
-                    pEnemy->forKilledByBullet();
+                    [pBullet forKilledEnemy];
+                    [[OALSimpleAudio sharedInstance] playEffect:@"HuoQiuDaDaoGuaiWu.ogg"];
+                    [pEnemy forKilledByBullet];
                 }
             }
         }
     }
     
-    unsigned int delCount = delBullet->count();
+    unsigned int delCount = [delBullet count];
     for (unsigned int idxDel = 0; idxDel < delCount; ++idxDel)
     {
-        pBullet = (CCBullet *)delBullet->objectAtIndex(idxDel);
-        pBulletArray->removeObject(pBullet, true);
-        this->removeChild(pBullet, true);
+        pBullet = (Bullet *)[delBullet objectAtIndex:idxDel];
+//        pBulletArray->removeObject(pBullet, true);
+        [[self pBulletArray] removeObject:pBullet];
+        [self removeChild:pBullet cleanup:YES];
     }
-    delBullet->release();
-}
-
-- (void)initBridgeArray{
-    
+//    delBullet->release();
+//    [delBullet release];
 }
 
 - (BOOL)isHeroInGadgetWithHeroPos:(CGPoint)heroPos andGadgetLevel:(float)gadgetLevel{
-    
+    BOOL ret = NO;
+    Gadget *tempGadget = nil;
+    unsigned int gadgetCount = [[self pGadgetArray] count];
+    CGRect gadgetRect;
+    for (unsigned int idx = 0; idx < gadgetCount; ++idx)
+    {
+        tempGadget = (Gadget *)[[self pGadgetArray] objectAtIndex:idx];
+        if ([tempGadget gadgetState] == eGadgetState_active)
+        {
+            gadgetRect = [tempGadget gadgetRect]
+            if (CGRectContainsPoint(gadgetRect, heroPos))
+            {
+                self.gadgetLevel = [tempGadget position].y + [tempGadget gadgetSize].height;
+                ret = YES;
+                self.heroInGadget = tempGadget;
+                [[Hero getHeroInstance] setGadgetable:YES];
+                break;
+            }
+        }
+    }
+    return ret;
 }
 
-
-
-
-- (void)launchGadgetInMap{
+- (void)initBridgeArray{
+    self.bridgeTileNums = 13;
     
+    CCSprite *pS = nil;
+    CGPoint bossPos = [[self pBossEnemy] position];
+    CGPoint pos;
+    for (int i = 0; i < bridgeTileNums; ++i)
+    {
+        CGPoint tilePos = self.bridgeTileStartPos;
+        self.tilePos.x += i;
+        //----------------
+        pS = [[self landLayer] tileCoordinateAt:tilePos];
+        [pS runAction:[CCActionMoveBy actionWithDuration:1.0f position:ccp(0, -60)]];
+        
+        [self tilecoordToPosition:tilePos];
+        if (pos.x >= bossPos.x)
+        {
+            if ([[self pBossEnemy] getEnemyState] == eEnemyState_active)
+            {
+                [[OALSimpleAudio sharedInstance] playEffect:@"BossDiaoLuoQiaoXia.ogg"];
+                [self pBossEnemy] runAction:[CCActionMoveBy actionWithDuration:1.0f position:ccp(0, -80)];
+            }
+        }
+    }
+    
+    
+    [[self pFlag] setVisible:NO];
 }
-
 
 - (void)pauseGameMap{
+    unsigned int enemyCount = [[self pEnemyArray] count];
+    Enemy *pEnemy = nil;
+    for (unsigned int idx = 0; idx < enemyCount; ++idx)
+    {
+        pEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
+        
+        if ([pEnemy getEnemyState] == eEnemyState_active)
+        {
+            [pEnemy unscheduleAllSelectors];
+        }
+    }
     
+    unsigned int bulletCount = [[self pBulletArray] count];
+    Bullet *pBullet = nil;
+    for (unsigned int idx = 0; idx < bulletCount; ++idx)
+    {
+        pBullet = (Bullet *)[[self pBulletArray] objectAtIndex:idx];
+        if ([pBullet bulletState] == eBulletState_active)
+        {
+            [pBullet unscheduleAllSelectors];
+        }
+    }
+    
+    
+    unsigned int gadgetCount = [[self pGadgetArray] count];
+    Gadget *pGadget = nil;
+    for (unsigned int idx = 0; idx < gadgetCount; ++idx)
+    {
+        pGadget = (Gadget *)[[self pGadgetArray] objectAtIndex:idx];
+        [pGadget unscheduleAllSelectors];
+    }
+    
+    [self unscheduleAllSelectors];
 }
+
 - (void)resumeGameMap{
     
+    unsigned int enemyCount = [[self pEnemyArray] count];
+    Enemy *pEnemy = nil;
+    for (unsigned int idx = 0; idx < enemyCount; ++idx)
+    {
+        pEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
+        
+        if ([pEnemy getEnemyState] == eEnemyState_active)
+        {
+//            pEnemy->scheduleUpdate();
+        }
+    }
+    
+    unsigned int bulletCount = [[self pBulletArray] count];
+    Bullet *pBullet = nil;
+    for (unsigned int idx = 0; idx < bulletCount; ++idx)
+    {
+        pBullet = (Bullet *)[[self pBulletArray] objectAtIndex:idx];
+        if ([pBullet bulletState] == eBulletState_active)
+        {
+//            pBullet->scheduleUpdate();
+        }
+    }
+    
+    unsigned int gadgetCount = [[self pGadgetArray] count];
+    Gadget *pGadget = nil;
+    for (unsigned int idx = 0; idx < gadgetCount; ++idx)
+    {
+        pGadget = (Gadget *)[[self pGadgetArray] objectAtIndex:idx];
+//        pGadget->scheduleUpdate();
+    }
+    
+//    this->scheduleUpdate();
 }
-
-
-
-
-
-
 
 
 // -----------------------------------------------------------------

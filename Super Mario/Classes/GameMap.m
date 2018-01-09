@@ -14,7 +14,7 @@
 #import "AnimationManager.h"
 #import "GameScene.h"
 #import "Hero.h"
-//#import "Bullet.h"
+#import "Bullet.h"
 #import "Global.h"
 #import "OALSimpleAudio.h"
 // -----------------------------------------------------------------
@@ -93,6 +93,7 @@ static GameMap *gameMap = nil;
     return self;
 }
 - (void)dealloc{
+    //---------
     [self unscheduleAllSelectors];
 }
 
@@ -215,7 +216,7 @@ static GameMap *gameMap = nil;
             }
             else if ([type isEqualToString:@"boss"])
             {
-                self.isBossMap = true;
+                self.isBossMap = YES;
                 pEnemy = [EnemyBoss new];
                 self.pBossEnemy = pEnemy;
             }
@@ -293,7 +294,6 @@ static GameMap *gameMap = nil;
         {
             if ([type isEqualToString:@"BirthPoint"])
             {
-                
                 self.marioBirthPos = [self tilecoordToPosition:tileXY];
                 self.marioBirthPos.x += [self tileSize].width / 2;
             }
@@ -315,7 +315,7 @@ static GameMap *gameMap = nil;
 
 - (void)launchEnemyInMap{
     Enemy *tempEnemy = nil;
-    unsigned int enemyCount = [[self pEnemyArray] count];
+    unsigned int enemyCount = [[self pEnemyArray] count] ;
     for (unsigned int idx = 0; idx < enemyCount; ++idx)
     {
         tempEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
@@ -516,7 +516,7 @@ static GameMap *gameMap = nil;
                     
                     if ([self mushroomPointContains:tileCoord])
                     {
-                        
+                        self.resetCoinPoint = tileCoord;
                         [self resetCoinBlockTexture];
                         [self showNewMushroomWithTileCoord:tileCoord andBodyType:bodyType];
                         [self deleteOneMushPointFromArray:tileCoord];
@@ -566,7 +566,6 @@ static GameMap *gameMap = nil;
     
     [[OALSimpleAudio sharedInstance] playEffect:@"DingChuMoGuHua.wma"];
     
-    // ∂•≥ˆµƒπ÷÷÷¿‡“≤◊ˆ“ª¥ŒÀÊª˙
     if (CCRANDOM_0_1() > 0.5f)
     {
         self.pRandomEnemy = [EnemyMushroom new];
@@ -708,8 +707,7 @@ static GameMap *gameMap = nil;
 }
 
 - (void)showBlockJump:(CGPoint)tileCoord{
-    CCSprite *tempSprite = [[self blockLayer] tileCoordinateAt:tileCoord];
-    [self blockLayer] tileCoordinateAt:tileCoord;888888
+//    CCSprite *tempSprite = [[self blockLayer] tileCoordinateAt:tileCoord];
     CCActionInterval *pJumpBy = [CCActionJumpBy actionWithDuration:0.2f position:CGPointZero height:[self tileSize].height * 0.5 jumps:1];
     [tempSprite runAction:pJumpBy];
 }
@@ -749,8 +747,7 @@ static GameMap *gameMap = nil;
         default:
             break;
     }
-    
-    pMushSprite->setPosition(pos);
+
     [[self pMushSprite] setPosition:pos];
     [self addChild:[self pMushSprite]];
     
@@ -775,6 +772,7 @@ static GameMap *gameMap = nil;
     CCActionMoveBy *pMushJump = [CCActionMoveBy actionWithDuration:0.4f position:ccp(0, [self tileSize].height)];
     [[self pAddLifeMushroom] runAction:pMushJump];
 }
+
 - (void)clearItem{
     [[self pItem] removeFromParentAndCleanup:YES];
     self.pItem = nil;
@@ -792,7 +790,7 @@ static GameMap *gameMap = nil;
 - (BOOL)isMarioEatMushroom:(CGPoint)tileCoord{
     if (self.pMushSprite == nil)
     {
-        return false;
+        return NO;
     }
     if (tileCoord.x == self.mushTileCoord.x && tileCoord.y == self.mushTileCoord.y)
     {
@@ -893,7 +891,7 @@ static GameMap *gameMap = nil;
     Bullet *pBullet = nil;
     Enemy *pEnemy = nil;
     NSMutableArray *delBullet = [NSMutableArray array];
-    [delBullet retain];
+//    [delBullet retain];
     NSMutableArray *delEnemy = nil;
     CGRect bulletRect;
     CGRect enemyRect;

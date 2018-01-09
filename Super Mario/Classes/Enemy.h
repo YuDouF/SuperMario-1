@@ -96,7 +96,7 @@
 @property CCSpriteFrame *rightFace;
 // -----------------------------------------------------------------
 // methods
-- (instancetype)initWithStartface:(int)_startface;
+- (instancetype)initWithStartface:(int)startface;
 - (void)launchEnemy;
 - (void)enemyCollistionH;
 - (void)update:(float)dt;

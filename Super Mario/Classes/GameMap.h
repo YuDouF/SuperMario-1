@@ -21,6 +21,14 @@
 @interface GameMap : CCTiledMap
 // -----------------------------------------------------------------
 // properties
+@property CCTiledMapLayer* cloudLayer;
+@property CCTiledMapLayer* blockLayer;
+@property CCTiledMapLayer* pipeLayer;
+@property CCTiledMapLayer* landLayer;
+@property CCTiledMapLayer* trapLayer;
+@property CCTiledMapObjectGroup* objectLayer;
+@property CCTiledMapLayer* coinLayer;
+@property CCTiledMapLayer* flagpoleLayer;
 
 @property CGPoint flagPoint;
 @property CCSprite *pFlag;
@@ -57,14 +65,7 @@
 @property CCSprite *pPrincess;
 @property CGPoint enemyTilePos;
 @property Enemy *pRandomEnemy;
-@property CCTiledMapLayer* cloudLayer;
-@property CCTiledMapLayer* blockLayer;
-@property CCTiledMapLayer* pipeLayer;
-@property CCTiledMapLayer* landLayer;
-@property CCTiledMapLayer* trapLayer;
-@property CCTiledMapObjectGroup* objectLayer;
-@property CCTiledMapLayer* coinLayer;
-@property CCTiledMapLayer* flagpoleLayer;
+
 
 
 // -----------------------------------------------------------------
@@ -73,6 +74,7 @@
 + (instancetype)node;
 - (instancetype)init;
 - (void)showFlagMove;
+- (void)createNewBulletForBossWithPos:(CGPoint)pos andType:(enum EnemyType)enemyType;
 - (BOOL)isHeroInGadgetWithHeroPos:(CGPoint)heroPos andGadgetLevel:(float)gadgetLevel;
 - (enum TileType)tileTypeforPos:(CGPoint)tileCoord;
 - (void)breakBlockWithTileCoord:(CGPoint) tileCoord andBodyType:(enum BodyType)bodyType;
@@ -98,7 +100,7 @@
 - (void)bulletVSEnemy;
 + (GameMap*)create:(NSString*)tmxFile;
 + (GameMap*)getGameMap;
-- (void)createNewBulletForBossWithPos:(CGPoint)pos andType:(enum EnemyType)enemyType;
+
 
 // -----------------------------------------------------------------
 

@@ -54,26 +54,23 @@
         [pBack setTarget:self selector:@selector(menuBack)];
         [self addChild:pBack z:2];
         
-        self.m_pLevel = [CCLabelTTF labelWithString:@"Level: 1" fontName:@"Arial" fontSize:20];
+        self.m_pLevel = [CCLabelTTF labelWithString:@"Level: 1" fontName:@"ArialMT" fontSize:20];
         self.m_pLevel.position=ccp(origin.x + visibleSize.width/2, origin.y + visibleSize.height - 20);
         [self addChild:self.m_pLevel z:3];
+        [[NSUserDefaults standardUserDefaults] setObject:@"yes" forKey:@"Level1"];
     }
     return self;
 }
 
 -(void)menuBegin{
     [[Global getGlobalInstance] setCurrentLevel:self.m_nCurPage];
-    GameScene *pGameScene = [[GameScene alloc]init];
-    CCScene *pScene = [[CCScene alloc]init];
-    [pScene addChild:pGameScene];
+    CCScene *pScene = [[GameScene alloc]init];
     [[CCDirector sharedDirector] replaceScene:pScene];
     
 }
 
 -(void)menuBack{
-    MainMenu *pMainMenu = [[MainMenu alloc]init];
-    CCScene *pScene = [[CCScene alloc]init];
-    [pScene addChild:pMainMenu];
+    CCScene *pScene = [[MainMenu alloc]init];
     [[CCDirector sharedDirector] replaceScene:pScene];
 }
 
@@ -97,44 +94,39 @@
     {
         self.m_nCurPage = 8;
     }
-    CGPoint  adjustPos = ccp(origin.x - visibleSize.width * (self.m_nCurPage-1), 0);
+    CGPoint adjustPos = ccp(origin.x - visibleSize.width * (self.m_nCurPage-1), 0);
     [self.pScene runAction:[CCActionMoveTo actionWithDuration:0.2f position:adjustPos]];
     
-//    NSString *str = [NSString stringWithFormat:@"Level: %d", self.m_nCurPage];
-//    [self.m_pLevel setString:str];
-//    str = [NSString stringWithFormat:@"Level%d", self.m_nCurPage];
-//    NSString *str1 = CCUserDefault::sharedUserDefault()->getStringForKey(str);
-//    if (str1 == "no")
-//    {
-//        [self.pNewGame setEnabled:NO];
-//    }else
-//    {
-//        [self.pNewGame setEnabled:YES];
-//    }
+    NSString *str = [NSString stringWithFormat:@"Level: %d", self.m_nCurPage];
+    [self.m_pLevel setString:str];
+    str = [NSString stringWithFormat:@"Level%d", self.m_nCurPage];
+    NSString *str1 = [[NSUserDefaults standardUserDefaults] objectForKey:str];
+    if (![str1 isEqualToString:@"yes"])
+    {
+        [self.pNewGame setEnabled:NO];
+    }else
+    {
+        [self.pNewGame setEnabled:YES];
+    }
     
 }
 
 -(void)onEnter{
     [super onEnter];
-    NSString *ccStr = nil;
-    NSString *str;
-    CCSprite *pSp = nil;
-//    for (int i = 2; i <= 8; ++i)
-//    {
-//        ccStr = [NSString stringWithFormat:@"Level%d", i];
-//        []
-//        str = CCUserDefault::sharedUserDefault()->getStringForKey(ccStr);
-//        if (str == @"no")
-//        {
-//            CCNodeColor *pColor = [CCNodeColor nodeWithColor:[CCColor colorWithCcColor4b: ccc4(0,0,0,200)]];
-//            //pSp = [self.pScene getChildByName:i recursively:YES];
-//            //pSp = (CCSprite*)pLayer->getChildByTag(i);
-//            [pColor setAnchorPoint:ccp(0.5, 0.5)];
-//            [pColor setPosition:pSp.position];
-//            [pColor setContentSize:pSp.contentSize];
-//            [self.pScene addChild:pColor z:[pSp zOrder]+1];
-//        }
-//    }
+    for (int i = 2; i <= 8; ++i)
+    {
+        NSString *ccStr = [NSString stringWithFormat:@"Level%d", i];
+        NSString *str = [[NSUserDefaults standardUserDefaults] objectForKey:ccStr];
+        if (![str isEqualToString:@"yes"])
+        {
+            CCNodeColor *pColor = [CCNodeColor nodeWithColor:[CCColor colorWithCcColor4b: ccc4(0,0,0,200)]];
+            CCSprite *pSp = (CCSprite*)[self.pScene getChildByName:[NSString stringWithFormat:@"%d",i] recursively:YES];
+            [pColor setAnchorPoint:ccp(0.5, 0.5)];
+            [pColor setPosition:pSp.position];
+            [pColor setContentSize:pSp.contentSize];
+            [self.pScene addChild:pColor z:[pSp zOrder]+1];
+        }
+    }
 }
 
 -(void)touchBegan:(CCTouch *)touch withEvent:(CCTouchEvent *)event{

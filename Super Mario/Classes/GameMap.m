@@ -34,7 +34,7 @@ static GameMap *gameMap = nil;
         [pGameMap extraInit];
         return pGameMap;
     }
-    CC_SAFE_DELETE(pGameMap);
+//    CC_SAFE_DELETE(pGameMap);
     return nil;
 }
 + (GameMap*)getGameMap{
@@ -51,7 +51,7 @@ static GameMap *gameMap = nil;
     NSAssert(self, @"Unable to create class %@", [self class]);
     // class initalization goes here
     CCTexture *pTexture = [[CCTextureCache sharedTextureCache] addImage:@"superMarioMap.png"];
-    self.brokenCoin = [CCSpriteFrame frameWithTexture:pTexture rectInPixels:CGRectMake(1, 18, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:pTexture.contentSize];
+    self.brokenCoin = [CCSpriteFrame frameWithTexture:pTexture rectInPixels:CGRectMake(1, 18, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(16, 16)];
     //    [[self brokenCoin] retain];
     
     self.pItemCoordArray = [CCPointArray arrayWithCapacity:100];
@@ -84,7 +84,6 @@ static GameMap *gameMap = nil;
     self.enemyTilePos = CGPointZero;
     self.pRandomEnemy = nil;
     
-    // ◊®Œ™BossµÿÕº◊º±∏µƒ
     self.bridgeTileStartPos = CGPointZero;
     self.bridgeTileNums = 0;
     self.pBossEnemy = nil;
@@ -257,7 +256,7 @@ static GameMap *gameMap = nil;
             if ([type isEqualToString:@"ladderLR"])
             {
     
-                pGadget = new CCGadgetLadderLR(dis);
+                pGadget = [[GadgetLadderLR alloc] initWithDis:dis];
                 str = (NSString*)[pDic objectForKey:@"LorR"];
                 val = [str intValue];
                 [pGadget setStartFace:val];
@@ -265,7 +264,7 @@ static GameMap *gameMap = nil;
             else if ([type isEqualToString:@"ladderUD"])
             {
                 // …œœ¬“∆∂ØµƒÃ›◊”
-                pGadget = new CCGadgetLadderUD(dis);
+                pGadget = [[GadgetLadderUD alloc] initWithDis:dis];
                 str = (NSString*)[pDic objectForKey:@"UorD"];
                 val = [str intValue];
                 [pGadget setStartFace:val];
@@ -295,7 +294,8 @@ static GameMap *gameMap = nil;
             if ([type isEqualToString:@"BirthPoint"])
             {
                 self.marioBirthPos = [self tilecoordToPosition:tileXY];
-                self.marioBirthPos.x += [self tileSize].width / 2;
+                self.marioBirthPos = ccp([self tileSize].width / 2, self.marioBirthPos.y);
+//                self.marioBirthPos.x += [self tileSize].width / 2;?
             }
             else if ([type isEqualToString:@"flagpoint"])
             {
@@ -315,7 +315,7 @@ static GameMap *gameMap = nil;
 
 - (void)launchEnemyInMap{
     Enemy *tempEnemy = nil;
-    unsigned int enemyCount = [[self pEnemyArray] count] ;
+    NSUInteger enemyCount = [[self pEnemyArray] count];
     for (unsigned int idx = 0; idx < enemyCount; ++idx)
     {
         tempEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
@@ -337,11 +337,11 @@ static GameMap *gameMap = nil;
 
 - (void)launchGadgetInMap{
     Gadget *tempGadget = nil;
-    unsigned int gadgetCount = [[self pGadgetArray] count];
+    NSUInteger gadgetCount = [[self pGadgetArray] count];
     for (unsigned int idx = 0; idx < gadgetCount; ++idx)
     {
         tempGadget = (Gadget *)[[self pGadgetArray] objectAtIndex:idx];
-        [tempGadget setPosition:[tempGadget getStartPos]];
+        [tempGadget setPosition:[tempGadget startPos]];
         [self addChild:tempGadget z:3];
         [tempGadget launchGadget];
     }
@@ -351,11 +351,11 @@ static GameMap *gameMap = nil;
 - (void)enemyVSHero{
     Enemy *tempEnemy = nil;
     enum EnemyVSHero vsRet;
-    unsigned int enemyCount = [[self pEnemyArray] count];
+    NSUInteger enemyCount = [[self pEnemyArray] count];
     for (unsigned int idx = 0; idx < enemyCount; ++idx)
     {
-        tempEnemy = (CCEnemy *)[[self pEnemyArray] objectAtIndex:idx];
-        if ([tempEnemy getEnemyState] == eEnemyState_active)
+        tempEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
+        if ([tempEnemy enemyState] == eEnemyState_active)
         {
             vsRet = [tempEnemy checkCollisionWithHero];
             switch (vsRet)
@@ -387,12 +387,12 @@ static GameMap *gameMap = nil;
 }
 
 - (void)stopUpdateForHeroDie{
-    unsigned int enemyCount = [[self pEnemyArray] count];
+    NSUInteger enemyCount = [[self pEnemyArray] count];
     Enemy *pEnemy = nil;
     for (unsigned int idx = 0; idx < enemyCount; ++idx)
     {
         pEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
-        if ([pEnemy getEnemyState] == eEnemyState_active)
+        if ([pEnemy enemyState] == eEnemyState_active)
         {
             [pEnemy stopEnemyUpdate];
             switch ([pEnemy enemyType])
@@ -409,13 +409,15 @@ static GameMap *gameMap = nil;
                     
                     [pEnemy stopAllActions];
                     break;
+                default:
+                    break;
             }
             
             [pEnemy unscheduleAllSelectors];
         }
     }
     
-    unsigned int bulletCount = [[self pBulletArray] count];
+    NSUInteger bulletCount = [[self pBulletArray] count];
     Bullet *pBullet = nil;
     for (unsigned int idx = 0; idx < bulletCount; ++idx)
     {
@@ -427,7 +429,7 @@ static GameMap *gameMap = nil;
     }
     
     
-    unsigned int gadgetCount = [[self pGadgetArray] count];
+    NSUInteger gadgetCount = [[self pGadgetArray] count];
     Gadget *pGadget = nil;
     for (unsigned int idx = 0; idx < gadgetCount; ++idx)
     {
@@ -497,7 +499,6 @@ static GameMap *gameMap = nil;
                         break;
                     case eBody_Small:
                     {
-                        
                         [self showBlockJump:tileCoord];
                         [[OALSimpleAudio sharedInstance] playEffect:@"DingYingZhuanKuai.ogg"];
                     }
@@ -523,10 +524,8 @@ static GameMap *gameMap = nil;
                     }
                     else
                     {
-                        
                         if (CCRANDOM_0_1() > 0.4f)
                         {
-                            
                             [[OALSimpleAudio sharedInstance] playEffect:@"EatCoin.ogg"];
                             [self showJumpUpBlinkCoin:tileCoord];
                             [self showCoinJump:tileCoord];
@@ -534,11 +533,9 @@ static GameMap *gameMap = nil;
                         else
                         {
                             [self showCoinJump:tileCoord];
-                            
                             self.enemyTilePos = tileCoord;
-                            [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:0.2f], [CCActionCallFunc actionWithTarget:self selector:@selector(randomShowEnemy)], nil]]
+                            [self runAction:[CCActionSequence actions:[CCActionDelay actionWithDuration:0.2f], [CCActionCallFunc actionWithTarget:self selector:@selector(randomShowEnemy)], nil]];
                         }
-                        
                     }
                 }
                 else
@@ -552,9 +549,8 @@ static GameMap *gameMap = nil;
                 {
                     
                     [[self pItemCoordArray] addControlPoint:tileCoord];
-                    
-                    CCSprite *pSprite = [[self blockLayer] tileCoordinateAt:tileCoord];
-                    [pSprite setSpriteFrame:[self brokenCoin]];
+                    //CCSprite *pSprite = [[self blockLayer]  tileCoordinateAt:tileCoord];
+                    //[pSprite setSpriteFrame:[self brokenCoin]];
                     [self showAddLifeMushroom:tileCoord];
                 }
             }
@@ -590,7 +586,7 @@ static GameMap *gameMap = nil;
     [self.pRandomEnemy setPosition:pos];
     [self addChild:[self pRandomEnemy] z:[[self blockLayer] zOrder] - 1];
     
-    [self pRandomEnemy] runAction:[CCActionSequence actions:[CCActionJumpBy actionWithDuration:0.2f position:ccp(0, 16) height:1 jumps:20], [CCActionCallFunc actionWithTarget:self selector:@selector(randomLaunchEnemy)], nil]
+    [[self pRandomEnemy] runAction:[CCActionSequence actions:[CCActionJumpBy actionWithDuration:0.2f position:ccp(0, 16) height:1 jumps:20], [CCActionCallFunc actionWithTarget:self selector:@selector(randomLaunchEnemy)], nil]];
 }
 
 - (void)randomLaunchEnemy{
@@ -649,7 +645,7 @@ static GameMap *gameMap = nil;
     [[OALSimpleAudio sharedInstance] playEffect:@"DingPoZhuan.ogg"];
     
     CCTexture *pTexture = [[CCTextureCache sharedTextureCache] addImage:@"singleblock.png"];
-    CCSpriteFrame *frame = [CCSpriteFrame frameWithTexture:pTexture rectInPixels:CGRectMake(0, 0, 8, 8) rotated:NO offset:ccp(0, 0) originalSize:pTexture.contentSize];
+    CCSpriteFrame *frame = [CCSpriteFrame frameWithTexture:pTexture rectInPixels:CGRectMake(0, 0, 8, 8) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(8, 8)];
     CGPoint pos = [self tilecoordToPosition:tileCoord];
     pos.x += [self tileSize].width / 2;
     pos.y += [self tileSize].height / 2;
@@ -687,11 +683,11 @@ static GameMap *gameMap = nil;
     [pSprite2 runAction:pRightUp];
     [pSprite3 runAction:pLeftDown];
     
-    [pSprite4 runAction:[CCActionSequence actions:pRightDown, [CCActionCallFunc actionWithTarget:self selector:@selector(clearSpriteArray)], nil]]
+    [pSprite4 runAction:[CCActionSequence actions:pRightDown, [CCActionCallFunc actionWithTarget:self selector:@selector(clearSpriteArray)], nil]];
 }
 
 - (void)showJumpUpBlinkCoin:(CGPoint)tileCoord{
-    self.pItem = [Item create:eBlinkCoin];
+    self.pItem = [Item itemWithItemType:eBlinkCoin];
     CGPoint pos = [self tilecoordToPosition:tileCoord];
     pos.x += [self tileSize].width / 2;
     pos.y += [self tileSize].height;
@@ -703,25 +699,25 @@ static GameMap *gameMap = nil;
     
     [[[self pItem] itemBody] runAction:[sAnimationMgr createAnimateWithType:eAniBlinkCoin]];
 
-    [[self pItem] runAction:[CCActionSequence actions:pJump, [CCActionCallFunc actionWithTarget:self selector:@selector(clearItem)], nil]]
+    [[self pItem] runAction:[CCActionSequence actions:pJump, [CCActionCallFunc actionWithTarget:self selector:@selector(clearItem)], nil]];
 }
 
 - (void)showBlockJump:(CGPoint)tileCoord{
-//    CCSprite *tempSprite = [[self blockLayer] tileCoordinateAt:tileCoord];
-    CCActionInterval *pJumpBy = [CCActionJumpBy actionWithDuration:0.2f position:CGPointZero height:[self tileSize].height * 0.5 jumps:1];
-    [tempSprite runAction:pJumpBy];
+    //CCSprite *tempSprite = [[self blockLayer] tileCoordinateAt:tileCoord];
+    //CCActionInterval *pJumpBy = [CCActionJumpBy actionWithDuration:0.2f position:CGPointZero height:[self tileSize].height * 0.5 jumps:1];
+    //[tempSprite runAction:pJumpBy];
 }
 - (void)showCoinJump:(CGPoint)tileCoord{
-    CCSprite *tempSprite = [[self blockLayer] tileCoordinateAt:tileCoord];
-    CCActionInterval *pJumpBy = [CCActionJumpBy actionWithDuration:0.2f position:CGPointZero height:[self tileSize].height * 0.5 jumps:1];
+    //CCSprite *tempSprite = [[self blockLayer] tileCoordinateAt:tileCoord];
+   // CCActionInterval *pJumpBy = [CCActionJumpBy actionWithDuration:0.2f position:CGPointZero height:[self tileSize].height * 0.5 jumps:1];
     
     self.resetCoinPoint = tileCoord;
     
-    [tempSprite runAction:[CCActionSequence action:pJumpBy, [CCActionCallFunc actionWithTarget:self selector:@selector(resetCoinBlockTexture)], nil]];
+    //[tempSprite runAction:[CCActionSequence action:pJumpBy, [CCActionCallFunc actionWithTarget:self selector:@selector(resetCoinBlockTexture)], nil]];
 }
 - (void)resetCoinBlockTexture{
-    CCSprite *coinTile = [[self blockLayer] tileCoordinateAt:resetCoinPoint];
-    [coinTile setSpriteFrame: [self brokenCoin]];
+    //CCSprite *coinTile = [[self blockLayer] tileCoordinateAt:self.resetCoinPoint];
+    //[coinTile setSpriteFrame: [self brokenCoin]];
 }
 - (void)showNewMushroomWithTileCoord:(CGPoint)tileCoord andBodyType:(enum BodyType)bodyType{
     [[OALSimpleAudio sharedInstance] playEffect:@"DingChuMoGuHuoHua.ogg"];
@@ -741,7 +737,7 @@ static GameMap *gameMap = nil;
             break;
         case eBody_Normal:
         {
-            pMushSprite = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"Tools.png"] rect:CGRectMake(0, 0, 18, 18)];
+            self.pMushSprite = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"Tools.png"] rect:CGRectMake(0, 0, 18, 18)];
         }
             break;
         default:
@@ -755,7 +751,7 @@ static GameMap *gameMap = nil;
     [[self pMushSprite] runAction:pMushJump];
 }
 - (void)showAddLifeMushroom:(CGPoint)tileCoord{
-    [[OALSimpleAudio sharedInstance] playEffect:@"DingChuMoGuHua.wma"]
+    [[OALSimpleAudio sharedInstance] playEffect:@"DingChuMoGuHua.wma"];
     
     
     self.addLifePoint = ccp(tileCoord.x, tileCoord.y - 1);
@@ -825,12 +821,12 @@ static GameMap *gameMap = nil;
 
 - (CGPoint)positionToTileCoord:(CGPoint)pos{
     int x = pos.x / [self tileSize].width;
-    int y = ([self tileSize].height - 1) - pos.y / [self tileSize].height;
+    int y = ([self mapSize].height - 1) - pos.y / [self tileSize].height;
     return ccp(x, y);
 }
 - (CGPoint)tilecoordToPosition:(CGPoint)tileCoord{
     float x = tileCoord.x * [self tileSize].width;
-    float y = ([self tileSize].height - 1 - tileCoord.y) * [self tileSize].height;
+    float y = ([self mapSize].height - 1 - tileCoord.y) * [self tileSize].height;
     return ccp(x, y);
 }
 
@@ -848,7 +844,7 @@ static GameMap *gameMap = nil;
             break;
     }
 
-    [[self pBulletArray] addObject:pBullet]
+    [[self pBulletArray] addObject:pBullet];
 
     [pBullet setPosition:[pBullet startPos]];
     [self addChild:pBullet z:7];
@@ -886,13 +882,13 @@ static GameMap *gameMap = nil;
 }
 
 - (void)bulletVSEnemy{
-    unsigned int bulletCount = [[self pBulletArray] count];
-    unsigned int enemyCount = [[self pEnemyArray] count];
+    NSUInteger bulletCount = [[self pBulletArray] count];
+    NSUInteger enemyCount = [[self pEnemyArray] count];
     Bullet *pBullet = nil;
     Enemy *pEnemy = nil;
     NSMutableArray *delBullet = [NSMutableArray array];
 //    [delBullet retain];
-    NSMutableArray *delEnemy = nil;
+//    NSMutableArray *delEnemy = nil;
     CGRect bulletRect;
     CGRect enemyRect;
     
@@ -905,7 +901,7 @@ static GameMap *gameMap = nil;
             [delBullet addObject:pBullet];
             continue;
         }
-        bulletRect = [pBullet bulletRect];
+        bulletRect = [pBullet getBulletRect];
         
         for (unsigned int idxEnemy = 0; idxEnemy < enemyCount; ++idxEnemy)
         {
@@ -917,6 +913,8 @@ static GameMap *gameMap = nil;
                 case eEnemy_Lighting:
                 case eEnemy_DarkCloud:
                     continue;
+                    break;
+                default:
                     break;
             }
             
@@ -933,7 +931,7 @@ static GameMap *gameMap = nil;
                 continue;
             }
             
-            if ([pEnemy getEnemyState] == eEnemyState_active)
+            if ([pEnemy enemyState] == eEnemyState_active)
             {
                 enemyRect = [pEnemy getEnemyRect];
                 
@@ -947,7 +945,7 @@ static GameMap *gameMap = nil;
         }
     }
     
-    unsigned int delCount = [delBullet count];
+    NSUInteger delCount = [delBullet count];
     for (unsigned int idxDel = 0; idxDel < delCount; ++idxDel)
     {
         pBullet = (Bullet *)[delBullet objectAtIndex:idxDel];
@@ -959,20 +957,20 @@ static GameMap *gameMap = nil;
 //    [delBullet release];
 }
 
-- (BOOL)isHeroInGadgetWithHeroPos:(CGPoint)heroPos andGadgetLevel:(float)gadgetLevel{
+- (BOOL)isHeroInGadgetWithHeroPos:(CGPoint)heroPos andGadgetLevel:(float*)gadgetLevel{
     BOOL ret = NO;
     Gadget *tempGadget = nil;
-    unsigned int gadgetCount = [[self pGadgetArray] count];
+    NSUInteger gadgetCount = [[self pGadgetArray] count];
     CGRect gadgetRect;
     for (unsigned int idx = 0; idx < gadgetCount; ++idx)
     {
         tempGadget = (Gadget *)[[self pGadgetArray] objectAtIndex:idx];
         if ([tempGadget gadgetState] == eGadgetState_active)
         {
-            gadgetRect = [tempGadget gadgetRect]
+            gadgetRect = [tempGadget getGadgetRect];
             if (CGRectContainsPoint(gadgetRect, heroPos))
             {
-                self.gadgetLevel = [tempGadget position].y + [tempGadget gadgetSize].height;
+                *gadgetLevel = [tempGadget position].y + [tempGadget bodySize].height;
                 ret = YES;
                 self.heroInGadget = tempGadget;
                 [[Hero getHeroInstance] setGadgetable:YES];
@@ -986,24 +984,24 @@ static GameMap *gameMap = nil;
 - (void)initBridgeArray{
     self.bridgeTileNums = 13;
     
-    CCSprite *pS = nil;
+    //CCSprite *pS = nil;
     CGPoint bossPos = [[self pBossEnemy] position];
     CGPoint pos;
-    for (int i = 0; i < bridgeTileNums; ++i)
+    for (int i = 0; i < self.bridgeTileNums; ++i)
     {
         CGPoint tilePos = self.bridgeTileStartPos;
-        self.tilePos.x += i;
+        tilePos.x = tilePos.x + i;
         //----------------
-        pS = [[self landLayer] tileCoordinateAt:tilePos];
-        [pS runAction:[CCActionMoveBy actionWithDuration:1.0f position:ccp(0, -60)]];
+        //pS = [[self landLayer] tileCoordinateAt:tilePos];
+        //[pS runAction:[CCActionMoveBy actionWithDuration:1.0f position:ccp(0, -60)]];
         
         [self tilecoordToPosition:tilePos];
         if (pos.x >= bossPos.x)
         {
-            if ([[self pBossEnemy] getEnemyState] == eEnemyState_active)
+            if ([[self pBossEnemy] enemyState] == eEnemyState_active)
             {
                 [[OALSimpleAudio sharedInstance] playEffect:@"BossDiaoLuoQiaoXia.ogg"];
-                [self pBossEnemy] runAction:[CCActionMoveBy actionWithDuration:1.0f position:ccp(0, -80)];
+                [[self pBossEnemy] runAction:[CCActionMoveBy actionWithDuration:1.0f position:ccp(0, -80)]];
             }
         }
     }
@@ -1013,19 +1011,19 @@ static GameMap *gameMap = nil;
 }
 
 - (void)pauseGameMap{
-    unsigned int enemyCount = [[self pEnemyArray] count];
+    NSUInteger enemyCount = [[self pEnemyArray] count];
     Enemy *pEnemy = nil;
     for (unsigned int idx = 0; idx < enemyCount; ++idx)
     {
         pEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
         
-        if ([pEnemy getEnemyState] == eEnemyState_active)
+        if ([pEnemy enemyState] == eEnemyState_active)
         {
             [pEnemy unscheduleAllSelectors];
         }
     }
     
-    unsigned int bulletCount = [[self pBulletArray] count];
+    NSUInteger bulletCount = [[self pBulletArray] count];
     Bullet *pBullet = nil;
     for (unsigned int idx = 0; idx < bulletCount; ++idx)
     {
@@ -1037,7 +1035,7 @@ static GameMap *gameMap = nil;
     }
     
     
-    unsigned int gadgetCount = [[self pGadgetArray] count];
+    NSUInteger gadgetCount = [[self pGadgetArray] count];
     Gadget *pGadget = nil;
     for (unsigned int idx = 0; idx < gadgetCount; ++idx)
     {
@@ -1050,19 +1048,19 @@ static GameMap *gameMap = nil;
 
 - (void)resumeGameMap{
     
-    unsigned int enemyCount = [[self pEnemyArray] count];
+    NSUInteger enemyCount = [[self pEnemyArray] count];
     Enemy *pEnemy = nil;
     for (unsigned int idx = 0; idx < enemyCount; ++idx)
     {
         pEnemy = (Enemy *)[[self pEnemyArray] objectAtIndex:idx];
         
-        if ([pEnemy getEnemyState] == eEnemyState_active)
+        if ([pEnemy enemyState] == eEnemyState_active)
         {
 //            pEnemy->scheduleUpdate();
         }
     }
     
-    unsigned int bulletCount = [[self pBulletArray] count];
+    NSUInteger bulletCount = [[self pBulletArray] count];
     Bullet *pBullet = nil;
     for (unsigned int idx = 0; idx < bulletCount; ++idx)
     {
@@ -1073,7 +1071,7 @@ static GameMap *gameMap = nil;
         }
     }
     
-    unsigned int gadgetCount = [[self pGadgetArray] count];
+    NSUInteger gadgetCount = [[self pGadgetArray] count];
     Gadget *pGadget = nil;
     for (unsigned int idx = 0; idx < gadgetCount; ++idx)
     {

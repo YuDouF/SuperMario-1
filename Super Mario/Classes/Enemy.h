@@ -37,6 +37,7 @@
 
 @property float jumpOffset;
 @property float ccJumpOffset;
+@property(nonatomic) enum EnemyState enemyState;
 
 // -----------------------------------------------------------------
 // methods
@@ -56,8 +57,6 @@
 - (void)forKilledByBullet;
 - (void)setNonVisibleForKilledByBullet;
 
-- (void)setEnemyState:(enum EnemyState)state;
-- (enum EnemyState)getEnemyState;
 // -----------------------------------------------------------------
 
 @end

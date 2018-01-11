@@ -6,7 +6,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Hero.h"
-//#import "AnimationManager.h"
+#import "AnimationManager.h"
 #import "Global.h"
 #import "OALSimpleAudio.h"
 
@@ -81,6 +81,7 @@ static Hero* heroInstance= nil;
         self.bulletable = false;
         self.gadgetable = false;
         self.currentBulletType = eBullet_common;
+        [self heroInit];
     }
     return self;
 }
@@ -103,11 +104,8 @@ static Hero* heroInstance= nil;
     return true;
 }
 
--(enum BodyType)bodyType{
-    return self.bodyType;
-}
 -(void)setBodyType:(enum BodyType)bodyType{
-    self.bodyType = bodyType;
+    _bodyType = bodyType;
     switch (bodyType)
     {
         case eBody_Normal:
@@ -170,7 +168,7 @@ static Hero* heroInstance= nil;
 }
 
 -(void)setHeroDie:(bool) die{
-    self.isDied = die;
+    _isDied = die;
     if(die){
         [Global getGlobalInstance].currentHeroType = eBody_Small;
         [[Global getGlobalInstance] lifeNumCutOne];
@@ -183,7 +181,7 @@ static Hero* heroInstance= nil;
         return;
     }
     self.statePre = self.state;
-    self.state = state;
+    _state = state;
     
     [self.mainBody stopAllActions];
     switch (state)
@@ -257,21 +255,21 @@ static Hero* heroInstance= nil;
                         switch ([[Global getGlobalInstance] currentBulletType])
                         {
                             case eBullet_common:
-                                //[self.mainBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimate:eAniRightFire]];
+                                [self.mainBody runAction:[CCActionRepeatForever actionWithAction:[[AnimationManager getInstance] createAnimateWithType:eAniRightFire]]];
                                 break;
                             case eBullet_arrow:
-                                //[self.mainBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimate:eAniArrowRight]];
+                                [self.mainBody runAction:[CCActionRepeatForever actionWithAction:[[AnimationManager getInstance] createAnimateWithType:eAniArrowRight]]];
                                 break;
                         }
                     }
                     else
                     {
-                        //[self.mainBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimate:eAniRight]];
+                        [self.mainBody runAction:[CCActionRepeatForever actionWithAction:[[AnimationManager getInstance] createAnimateWithType:eAniRight]]];
                     }
                 }
                 else
                 {
-                    //[self.mainBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimate:eAniRightSmall]];
+                    [self.mainBody runAction:[CCActionRepeatForever actionWithAction:[[AnimationManager getInstance] createAnimateWithType:eAniRightSmall]]];
                 }
             }
             self.face = eRight;
@@ -288,21 +286,21 @@ static Hero* heroInstance= nil;
                         switch ([[Global getGlobalInstance] currentBulletType])
                         {
                             case eBullet_common:
-                                //[self.mainBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimate:eAniLeftFire]];
+                                [self.mainBody runAction:[CCActionRepeatForever actionWithAction:[[AnimationManager getInstance] createAnimateWithType:eAniLeftFire]]];
                                 break;
                             case eBullet_arrow:
-                                //[self.mainBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimate:eAniArrowLeft]];
+                                [self.mainBody runAction:[CCActionRepeatForever actionWithAction:[[AnimationManager getInstance] createAnimateWithType:eAniArrowLeft]]];
                                 break;
                         }
                     }
                     else
                     {
-                        //[self.mainBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimate:eAniLeft]];
+                        [self.mainBody runAction:[CCActionRepeatForever actionWithAction:[[AnimationManager getInstance] createAnimateWithType:eAniLeft]]];
                     }
                 }
                 else
                 {
-                    //[self.mainBody runAction:[CCActionRepeatForever actionWithAction:[sAnimationMgr createAnimate:eAniLeftSmall]];
+                    [self.mainBody runAction:[CCActionRepeatForever actionWithAction:[[AnimationManager getInstance] createAnimateWithType:eAniLeftSmall]]];
                 }
                 
             }
@@ -378,7 +376,7 @@ static Hero* heroInstance= nil;
     {
         case eBody_Small:
             [self.mainBody setSpriteFrame:self.lifeOverSmall];
-            //[self.mainBody runAction:[sAnimationMgr createAnimate:eAniSmallDie]];
+            [self.mainBody runAction:[[AnimationManager getInstance] createAnimateWithType:eAniSmallDie]];
             break;
         case eBody_Normal:
             if (self.bulletable)
@@ -387,18 +385,18 @@ static Hero* heroInstance= nil;
                 {
                     case eBullet_common:
                         [self.mainBody setSpriteFrame:self.lifeOverFire];
-                        //[self.mainBody runAction:[sAnimationMgr createAnimate:eAniFireDie]];
+                        [self.mainBody runAction:[[AnimationManager getInstance] createAnimateWithType:eAniFireDie]];
                         break;
                     case eBullet_arrow:
                         self.lifeOverFire =[CCSpriteFrame frameWithTextureFilename:@"arrow_die.png" rectInPixels:CGRectMake(24, 0, 24, 32) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(24, 32)];
                         [self.mainBody setSpriteFrame:self.lifeOverFire];
-                        //[self.mainBody runAction:[sAnimationMgr createAnimate:eAniArrowDie]];
+                        [self.mainBody runAction:[[AnimationManager getInstance] createAnimateWithType:eAniArrowDie]];
                 }
             }
             else
             {
                 [self.mainBody setSpriteFrame:self.lifeOverNormal];
-                //[self.mainBody runAction:[sAnimationMgr createAnimate:eAniNormalDie]];
+                [self.mainBody runAction:[[AnimationManager getInstance] createAnimateWithType:eAniNormalDie]];
             }
             break;
         default:
@@ -427,10 +425,10 @@ static Hero* heroInstance= nil;
             switch ([[Global getGlobalInstance] currentBulletType])
             {
                 case eBullet_common:
-                    //pAction = [sAnimationMgr createAnimate:eAniFireActionR];
+                    pAction = [[AnimationManager getInstance] createAnimateWithType:eAniFireActionR];
                     break;
                 case eBullet_arrow:
-                    //pAction = [sAnimationMgr createAnimate:eAniArrowActionR];
+                    pAction = [[AnimationManager getInstance] createAnimateWithType:eAniArrowActionR];
                     break;
             }
             break;
@@ -440,10 +438,10 @@ static Hero* heroInstance= nil;
             switch ([[Global getGlobalInstance] currentBulletType])
             {
                 case eBullet_common:
-                    //pAction = [sAnimationMgr createAnimate:eAniFireActionL];
+                    pAction = [[AnimationManager getInstance] createAnimateWithType:eAniFireActionL];
                     break;
                 case eBullet_arrow:
-                    //pAction = [sAnimationMgr createAnimate:eAniArrowActionL];
+                    pAction = [[AnimationManager getInstance] createAnimateWithType:eAniArrowActionL];
                     break;
             }
             break;
@@ -575,19 +573,15 @@ static Hero* heroInstance= nil;
     self.isSafeTime = NO;
 }
 
--(enum BulletType)currentBulletType{
-    return self.currentBulletType;
-}
-
 -(void)setCurrentBulletType:(enum BulletType)currentBulletType{
-    if (self.currentBulletType != currentBulletType)
+    if (_currentBulletType != currentBulletType)
     {
-        self.currentBulletType = currentBulletType;
+        _currentBulletType = currentBulletType;
         switch (self.face)
         {
             case eRight:
             {
-                switch (self.currentBulletType)
+                switch (currentBulletType)
                 {
                     case eBullet_common:
                         [self.mainBody setSpriteFrame:self.normalRightFire];

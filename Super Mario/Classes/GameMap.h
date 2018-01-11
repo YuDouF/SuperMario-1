@@ -14,7 +14,7 @@
 #import "cocos2d.h"
 #import "CCTextureCache.h"
 #import "GameEnum.h"
-//#import "Item.h"
+#import "Item.h"
 #import "Enemy.h"
 
 // -----------------------------------------------------------------
@@ -75,7 +75,7 @@
 - (instancetype)init;
 - (void)showFlagMove;
 - (void)createNewBulletForBossWithPos:(CGPoint)pos andType:(enum EnemyType)enemyType;
-- (BOOL)isHeroInGadgetWithHeroPos:(CGPoint)heroPos andGadgetLevel:(float)gadgetLevel;
+- (BOOL)isHeroInGadgetWithHeroPos:(CGPoint)heroPos andGadgetLevel:(float*)gadgetLevel;
 - (enum TileType)tileTypeforPos:(CGPoint)tileCoord;
 - (void)breakBlockWithTileCoord:(CGPoint) tileCoord andBodyType:(enum BodyType)bodyType;
 - (void)showBlockBroken:(CGPoint)tileCoord;

@@ -51,11 +51,11 @@
     CGPoint pos = [self position];
     return CGRectMake(pos.x - self.bodySize.width/2 + 2, pos.y + 2, self.bodySize.width - 4, self.bodySize.height - 4);
 }
-// -----------------------------------------------------------------
+ //-----------------------------------------------------------------
 - (void)setEnemyState:(enum EnemyState)state
 {
-    [self setEnemyState:state];
-    switch ([self getEnemyState])
+   _enemyState = state;
+    switch (self.enemyState)
     {
         case eEnemyState_over:
         {
@@ -68,10 +68,6 @@
         default:
             break;
     }
-}
-- (enum EnemyState) getEnemyState
-{
-    return [self getEnemyState];
 }
 
 - (void)checkState
@@ -113,7 +109,6 @@
     leftPos = ccp(leftPos.x + self.bodySize.width / 2 + [[GameMap getGameMap] tileSize].width, currentPos.y);
     
     enum TileType tileType;
-    // ◊Û≤‡ºÏ≤‚
     tileType = [[GameMap getGameMap] tileTypeforPos:leftTilecoord];
     switch (tileType)
     {
@@ -173,6 +168,8 @@
             [self setEnemyState:eEnemyState_over];
             break;
         }
+        default:
+            break;
     }
     
     if (downFlag)
@@ -227,8 +224,6 @@
 
     [[self enemyBody] setSpriteFrame:self.enemyLifeOver];
     CCActionInterval *pDelay = [CCActionDelay actionWithDuration:1.0f];
-//    this->runAction(CCSequence::create(pDelay,
-//                                       CCCallFunc::create(this, callfunc_selector(CCEnemy::setNonVisibleForKilledByHero)), NULL));
     [self runAction:[CCActionSequence actions:pDelay, [CCActionCallFunc actionWithTarget:self selector:@selector(setNonVisibleForKilledByHero)], nil]];
 }
 
@@ -347,10 +342,10 @@
     [self setAnchorPoint:ccp(0.5f, 0)];
     
     //*************************
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(32, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(32, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(16, 16)];
 //    [self.enemyLifeOver retain];
     
-    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(48, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(48, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(16, 16)];
 //    [self.overByArrow retain];
     
     self.moveOffset = -self.ccMoveOffset;
@@ -375,7 +370,7 @@
 - (void)update:(float)dt{
     [self checkState];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         CGPoint currentPos = [self position];
         currentPos.x += self.moveOffset;
@@ -411,7 +406,7 @@
     [self addChild:self.enemyBody];
     [self setAnchorPoint:ccp(0.5f, 0)];
     
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"flower0.png" rectInPixels:CGRectMake(0, 0, 16, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"flower0.png" rectInPixels:CGRectMake(0, 0, 16, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(16, 24)];
 //    [self.enemyLifeOver retain];
     
     self.overByArrow = self.enemyLifeOver;
@@ -501,14 +496,14 @@
         case 0:
             self.startFace = eLeft;
             self.enemyBody = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"tortoise0.png"] rect:CGRectMake(18 * 2, 0, 18, 24)];
-            self.leftFace = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 2, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+            self.leftFace = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 2, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(18, 24)];
 //            [self.leftFace retain];
             self.moveOffset = -self.ccMoveOffset;
             break;
         case 1:
             self.startFace = eRight;
             self.enemyBody = [CCSprite spriteWithTexture:[CCTexture textureWithFile:@"tortoise0.png"] rect:CGRectMake(18 * 5, 0, 18, 24)];
-            self.rightFace = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 5, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+            self.rightFace = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 5, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(18, 24)];
 //            [self.rightFace retain];
             self.moveOffset = self.ccMoveOffset;
             break;
@@ -523,10 +518,10 @@
     [self addChild:self.enemyBody];
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 9, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 9, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(18, 24)];
 //    [self.enemyLifeOver retain];
     
-    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(18, 24)];
 //    [self.overByArrow retain];
     
     return self;
@@ -602,7 +597,7 @@
 {
     [self checkState];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         CGPoint currentPos = [self position];
         currentPos.x += self.moveOffset;
@@ -644,10 +639,10 @@
     [self addChild:self.enemyBody];
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
 
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 9, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 9, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(18, 24)];
 //    [self.enemyLifeOver retain];
     
-    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(18, 24)];
 //    [self.overByArrow retain];
     
     self.roundDis = dis;
@@ -717,10 +712,10 @@
     [self addChild:self.enemyBody];
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 9, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 9, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(18, 24)];
 //    [self.enemyLifeOver retain];
     
-    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"tortoise0.png" rectInPixels:CGRectMake(18 * 8, 0, 18, 24) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(18, 24)];
 //    [self.overByArrow retain];
     
     self.flyDis = dis;
@@ -902,7 +897,7 @@
     [self addChild:self.enemyBody];
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"flyFishRight.png" rectInPixels:CGRectMake(16 * 4, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"flyFishRight.png" rectInPixels:CGRectMake(16 * 4, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(16, 16)];
 //    [self.enemyLifeOver retain];
     self.overByArrow = self.enemyLifeOver;
     
@@ -1014,7 +1009,7 @@
     [self addChild:self.enemyBody];
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"boss.png" rectInPixels:CGRectMake(0, 0, 32, 32) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"boss.png" rectInPixels:CGRectMake(0, 0, 32, 32) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(32, 32)];
 //    [self.enemyLifeOver retain];
     self.overByArrow = self.enemyLifeOver;
 //    [self.overByArrow retain];
@@ -1039,7 +1034,7 @@
 - (void)update:(float)dt{
     [self checkState];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         CGPoint currentPos = [self position];
         currentPos.x += self.moveOffset;
@@ -1109,7 +1104,7 @@
     
     if (leftCheck - self.leftSide <= 0.5f)
     {
-        if ([self getEnemyState] == eEnemyState_active)
+        if ([self enemyState] == eEnemyState_active)
         {
             [[OALSimpleAudio sharedInstance] playEffect:@"BossHuoQiu.ogg"];
             CGPoint tempPos = ccp(pos.x - self.bodySize.width/4, pos.y + 3*(self.bodySize.height)/4);
@@ -1161,7 +1156,7 @@
     [self addChild:self.enemyBody];
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"bossBullet.png" rectInPixels:CGRectMake(0, 0, 24, 8) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"bossBullet.png" rectInPixels:CGRectMake(0, 0, 24, 8) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(24, 8)];
 //    [self.enemyLifeOver retain];
     self.overByArrow = self.enemyLifeOver;
 //    [self.overByArrow retain];
@@ -1183,7 +1178,7 @@
 - (void)update:(float)dt{
     [self checkState];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         CGPoint currentPos = [self position];
         currentPos.x += self.moveOffset;
@@ -1256,9 +1251,9 @@
     [self addChild:self.enemyBody];
     [self setAnchorPoint:ccp(0.5f, 0.0f)];
     
-    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(0, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.enemyLifeOver = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(0, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(16, 16)];
 //    [self.enemyLifeOver retain];
-    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(16 * 3, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:self.bodySize];
+    self.overByArrow = [CCSpriteFrame frameWithTextureFilename:@"Mushroom0.png" rectInPixels:CGRectMake(16 * 3, 0, 16, 16) rotated:NO offset:ccp(0, 0) originalSize:CGSizeMake(16, 16)];
 //    [self.overByArrow retain];
     
     self.addNums = addnum;
@@ -1280,7 +1275,7 @@
 - (void)update:(float)dt{
     [self checkState];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         if (self.addNums)
         {
@@ -1402,7 +1397,7 @@
 - (void)update:(float)dt{
     [self checkState];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         if (self.isFireable)
         {
@@ -1519,7 +1514,7 @@
 - (void)update:(float)dt{
     [self checkState];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         CGPoint currentPos = [self position];
         currentPos.x += self.moveOffset;
@@ -1645,7 +1640,7 @@
     
     CGPoint heroPos = [[Hero getHeroInstance] position];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         if (self.leftSide <= heroPos.x && heroPos.x <= self.rightSide)
         {
@@ -1733,7 +1728,7 @@
 - (void)update:(float)dt{
     [self checkState];
     
-    if ([self getEnemyState] == eEnemyState_active)
+    if ([self enemyState] == eEnemyState_active)
     {
         CGPoint currentPos = [self position];
         currentPos.y += self.jumpOffset;

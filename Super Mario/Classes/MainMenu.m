@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "MainMenu.h"
 #import "GameScene.h"
-//#import "GameLayer.h"
 #import "Global.h"
 #import "SelectMenu.h"
 #import "AboutMenu.h"
@@ -55,8 +54,6 @@
         self.pSetting.position = ccp(winSize.width/2, winSize.height/2 - 80);
         [self.pSetting setTarget:self selector:@selector(menuSetting)];
         [self addChild:self.pSetting z:1];
-        
-        //CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 0, false);
     }
     return self;
 }
@@ -64,23 +61,13 @@
 -(void)menuCallBackForStartGame
 {
     [[Global getGlobalInstance] setLifeNum:3];
-    //[[CCGlobal getGlobalInstance] reSetLevel];
-    
-    //CCGameLayer *pGameLayer = CCGameLayer::create();
-//    CCSelectMenu *pSelectMenu = CCSelectMenu::create();
     CCScene* selectMenu = [SelectMenu new];
     [[CCDirector sharedDirector] replaceScene:selectMenu];
-    //CCGameScene *pGameScene =  CCGameScene::getGameSceneInstance();
-    //pGameScene->removeAllChildrenWithCleanup(true);
-    
-    //pGameScene->addChild(pSelectMenu);
 }
 
 -(void)menuCallBackForAbout
 {
-    AboutMenu *pAbout = [[AboutMenu alloc]init];
-    CCScene *pScene = [[CCScene alloc]init];
-    [pScene addChild:pAbout];
+    CCScene *pScene = [[AboutMenu alloc] init];
     [[CCDirector sharedDirector] replaceScene:pScene];
 }
 

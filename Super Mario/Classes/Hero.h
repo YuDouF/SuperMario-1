@@ -16,7 +16,7 @@
 @property CGSize norBodySize;
 @property CGSize smallSize;
 @property CGSize currentSize;
-@property enum BodyType bodyType;   //正常 死亡 可开火
+@property(nonatomic) enum BodyType bodyType;   //正常 死亡 可开火
 
 @property CCSpriteFrame *normalRight;
 @property CCSpriteFrame *normalLeft;
@@ -49,7 +49,7 @@
 @property bool isFlying;    //是否在空中
 
 @property bool bulletable;
-@property enum BulletType currentBulletType;
+@property(nonatomic) enum BulletType currentBulletType;
 @property bool gadgetable;
 
 @property CCLabelTTF* pLabelUp; //标记

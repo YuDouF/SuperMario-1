@@ -19,8 +19,10 @@
         CGPoint origin = [[CCDirector sharedDirector] accessibilityActivationPoint];// getVisibleOrigin
         CGSize visibleSize = [[CCDirector sharedDirector] viewSize];
         
+        
         CCSprite *pBg = [CCSprite spriteWithImageNamed:@"bg.png"];
         pBg.position = ccp(origin.x + visibleSize.width/2, origin.y + visibleSize.height/2);
+        [pBg setScaleX:visibleSize.width/pBg.textureRect.size.width];
         [self addChild:pBg];
         
         CCSprite *pZhy = [CCSprite spriteWithImageNamed:@"zhy.jpg"];
